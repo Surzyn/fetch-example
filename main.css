@@ -1,0 +1,34 @@
+body {
+  display: flex;
+  margin: 30px;
+  flex-wrap: wrap;
+}
+
+#countriesList,
+#citiesList {
+  max-height: 30vw;
+  overflow: auto;
+}
+
+#cityData li > span {
+  margin: 5px;
+}
+
+#countriesList li:hover,
+#citiesList li:hover,
+#cityData li:hover {
+  background-color: #08415c;
+  color: aliceblue;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.clear-icon {
+  position: relative;
+  left: -30px;
+  cursor: pointer;
+}
+
+.hidden {
+  visibility: hidden;
+}
