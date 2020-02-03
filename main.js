@@ -1,80 +1,32 @@
 const HERO_URL = "https://api.openaq.org/v1";
 let allCountries = [];
 let allCitiesInCountry = [];
+
 let countryInputElement;
 let clearCountriesSearchElement;
 let countriesCountElement;
-
 let citiesInputElement;
 let citiesCountElement;
 let clearCitiesSearchElement;
 
-function getData(route) {
-  return fetch(`${HERO_URL}${route}`)
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      return Promise.reject(response.status);
-    })
-    .catch(err => {
-      console.warn(err);
-    });
-}
-
-getData("/countries").then(countryData => {
-  allCountries = countryData.results;
-  generateCountriesList(allCountries);
-  setCountNumber(
-    countriesCountElement,
-    allCountries.length,
-    allCountries.length
-  );
-});
-
-getData("/latest?city=Kraków").then(krakowData => {
-  console.log(krakowData);
-});
-
 window.onload = async () => {
-  countryInputElement = document.querySelector("#countryInput");
-  clearCountriesSearchElement = document.querySelector("#clearCountriesSearch");
-  citiesInputElement = document.querySelector("#citiesInput");
-  countriesCountElement = document.querySelector("#countriesCount");
+  bindElementsFromDOM();
+  addEventsToInputs();
+  addEventsToClearButtons();
+  loadAllCountries();
+};
 
-  citiesCountElement = document.querySelector("#citiesCount");
-  clearCitiesSearchElement = document.querySelector("#clearCitiesSearch");
-
-  countryInputElement.addEventListener("input", e => {
-    handleCountriesInputChange(e);
-  });
-
-  clearCountriesSearchElement.addEventListener("click", () => {
-    countryInputElement.value = "";
+function loadAllCountries() {
+  getData("/countries").then(countryData => {
+    allCountries = countryData.results;
     generateCountriesList(allCountries);
-    toggleVisibility(clearCountriesSearchElement, false);
     setCountNumber(
       countriesCountElement,
       allCountries.length,
       allCountries.length
     );
   });
-
-  citiesInputElement.addEventListener("input", e => {
-    handleCitiesInputChange(e);
-  });
-
-  clearCitiesSearchElement.addEventListener("click", () => {
-    citiesInputElement.value = "";
-    generateCitiesList(allCitiesInCountry);
-    toggleVisibility(clearCitiesSearchElement, false);
-    setCountNumber(
-      citiesCountElement,
-      allCitiesInCountry.length,
-      allCitiesInCountry.length
-    );
-  });
-};
+}
 
 function handleCitiesInputChange(e) {
   const searchText = e.target.value;
@@ -219,4 +171,61 @@ function filterCities(searchText) {
     }
     return false;
   });
+}
+
+function bindElementsFromDOM() {
+  countryInputElement = document.querySelector("#countryInput");
+  clearCountriesSearchElement = document.querySelector("#clearCountriesSearch");
+  citiesInputElement = document.querySelector("#citiesInput");
+  countriesCountElement = document.querySelector("#countriesCount");
+
+  citiesCountElement = document.querySelector("#citiesCount");
+  clearCitiesSearchElement = document.querySelector("#clearCitiesSearch");
+}
+
+function addEventsToInputs() {
+  countryInputElement.addEventListener("input", e => {
+    handleCountriesInputChange(e);
+  });
+
+  citiesInputElement.addEventListener("input", e => {
+    handleCitiesInputChange(e);
+  });
+}
+
+function addEventsToClearButtons() {
+  clearCountriesSearchElement.addEventListener("click", () => {
+    countryInputElement.value = "";
+    generateCountriesList(allCountries);
+    toggleVisibility(clearCountriesSearchElement, false);
+    setCountNumber(
+      countriesCountElement,
+      allCountries.length,
+      allCountries.length
+    );
+  });
+
+  clearCitiesSearchElement.addEventListener("click", () => {
+    citiesInputElement.value = "";
+    generateCitiesList(allCitiesInCountry);
+    toggleVisibility(clearCitiesSearchElement, false);
+    setCountNumber(
+      citiesCountElement,
+      allCitiesInCountry.length,
+      allCitiesInCountry.length
+    );
+  });
+}
+
+function getData(route) {
+  return fetch(`${HERO_URL}${route}`)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      return Promise.reject(response.status);
+    })
+    .catch(err => {
+      console.warn(err);
+    });
 }
